@@ -6,15 +6,11 @@
   <title>ARSLAN LISTAS v3.4 — KIWI MOBILE TABS</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 
-  <!-- XLSX -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
   <!-- ✅ Para generar LINK Repartidor comprimido -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
-
-  <!-- CSS separado -->
-  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -23,6 +19,7 @@
       <h1>🍈 ARSLAN LISTAS v3.4 — KIWI MOBILE TABS</h1>
       <span class="pill">Modo móvil optimizado</span>
       <span class="pill">🚚 Reparto link: /reparto/</span>
+
       <span class="price-chip" title="Atajos de cantidades">
         <span class="kbd">+</span><span class="kbd">-</span>
         <span class="kbd">↑</span><span class="kbd">↓</span>
@@ -30,27 +27,46 @@
         <span class="kbd">Alt</span>=0,1
       </span>
     </div>
+
     <div class="toolbar">
-      <button class="btn ghost small" onclick="generarLinkRepartidor()">🚚 Link Repartidor</button>
-      <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">🌗 Tema</button>
+      <button class="btn ghost small" id="btnLinkRepartidor">🚚 Link Repartidor</button>
+      <button class="theme-toggle" id="btnTheme" title="Cambiar tema">🌗 Tema</button>
     </div>
   </div>
 
   <div class="container">
     <div class="hint" style="margin-bottom:10px">
-      Flujo: Diccionario → Tiendas/Clientes (Estandarizar) → Global (Unificar/Asignar) → Proveedores (TXT) → Reparto (clic) → PDF/WhatsApp
+      Flujo: Diccionario → Tiendas/Clientes (Estandarizar) → Global (Unificar/Asignar) → Proveedores (TXT) → Reparto → Precios (WhatsApp/TXT/PDF)
     </div>
 
     <!-- TAB: Diccionario -->
     <section class="tab" id="tab-dic">
+      <!-- ✅ Resumen del día -->
+      <div class="card">
+        <div class="hd">
+          <strong>📊 Resumen del día</strong>
+          <div class="toolbar">
+            <button class="btn ghost" id="btnRefreshResumen">🔄 Refrescar</button>
+            <button class="btn muted" id="btnGoGlobal">🧮 Ir a Global</button>
+            <button class="btn muted" id="btnGoProveedores">📦 Ir a Proveedores</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="grid-3" id="resumen_cards"></div>
+          <div class="hint" style="margin-top:8px">
+            Tip: Asigna desde Global con ✅ al proveedor activo. En Proveedores mete precios (se guardan en Lista de precios).
+          </div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="hd">
           <strong>📚 Vocabulario estandarizado (editable)</strong>
           <div class="toolbar">
-            <button class="btn ghost" onclick="addNewWord()">+ Nuevo producto</button>
-            <button class="btn ghost" onclick="saveVocab()">Guardar vocabulario</button>
-            <button class="btn muted" onclick="limpiarDia()">🧹 Limpiar día</button>
-            <button class="btn muted" onclick="resetAll()">💥 Reset total</button>
+            <button class="btn ghost" id="btnNewWord">+ Nuevo producto</button>
+            <button class="btn ghost" id="btnSaveVocab">Guardar vocabulario</button>
+            <button class="btn muted" id="btnLimpiarDia">🧹 Limpiar día</button>
+            <button class="btn muted" id="btnResetAll">💥 Reset total</button>
           </div>
         </div>
         <div class="bd">
@@ -70,15 +86,15 @@
           <div class="hd">
             <strong>🏪 San Pablo</strong>
             <div class="toolbar">
-              <button class="btn ghost" onclick="estandarizar('sp')">Estandarizar</button>
-              <button class="btn" onclick="guardarTienda('sp')">Guardar</button>
-              <button class="btn muted" onclick="exportarTiendaTXT('sp')">📄 TXT</button>
-              <button class="btn muted" onclick="enviarTiendaWhatsApp('sp')">📲 WhatsApp</button>
+              <button class="btn ghost" data-action="estandarizar" data-code="sp">Estandarizar</button>
+              <button class="btn" data-action="guardarTienda" data-code="sp">Guardar</button>
+              <button class="btn muted" data-action="exportarTiendaTXT" data-code="sp">📄 TXT</button>
+              <button class="btn muted" data-action="enviarTiendaWhatsApp" data-code="sp">📲 WhatsApp</button>
             </div>
           </div>
           <div class="bd">
             <textarea id="in_sp" placeholder="Pega lista San Pablo..."></textarea>
-            <div class="hint">Edita en la tabla: OK = verde, Revisar = rojo. Sugerencias al escribir. Cantidades con teclado (+/-/↑/↓).</div>
+            <div class="hint">Edita en tabla: OK = verde, Revisar = rojo. Sugerencias al escribir. Cantidades con teclado (+/-/↑/↓).</div>
             <div id="tbl_sp_wrap" class="scroll-x" style="margin-top:8px"></div>
           </div>
         </div>
@@ -88,15 +104,15 @@
           <div class="hd">
             <strong>🏪 San Lesmes</strong>
             <div class="toolbar">
-              <button class="btn ghost" onclick="estandarizar('sl')">Estandarizar</button>
-              <button class="btn" onclick="guardarTienda('sl')">Guardar</button>
-              <button class="btn muted" onclick="exportarTiendaTXT('sl')">📄 TXT</button>
-              <button class="btn muted" onclick="enviarTiendaWhatsApp('sl')">📲 WhatsApp</button>
+              <button class="btn ghost" data-action="estandarizar" data-code="sl">Estandarizar</button>
+              <button class="btn" data-action="guardarTienda" data-code="sl">Guardar</button>
+              <button class="btn muted" data-action="exportarTiendaTXT" data-code="sl">📄 TXT</button>
+              <button class="btn muted" data-action="enviarTiendaWhatsApp" data-code="sl">📲 WhatsApp</button>
             </div>
           </div>
           <div class="bd">
             <textarea id="in_sl" placeholder="Pega lista San Lesmes..."></textarea>
-            <div class="hint">Edita en la tabla: OK = verde, Revisar = rojo. Sugerencias al escribir. Cantidades con teclado (+/-/↑/↓).</div>
+            <div class="hint">Edita en tabla: OK = verde, Revisar = rojo. Sugerencias al escribir. Cantidades con teclado (+/-/↑/↓).</div>
             <div id="tbl_sl_wrap" class="scroll-x" style="margin-top:8px"></div>
           </div>
         </div>
@@ -106,15 +122,15 @@
           <div class="hd">
             <strong>🏪 Santiago</strong>
             <div class="toolbar">
-              <button class="btn ghost" onclick="estandarizar('st')">Estandarizar</button>
-              <button class="btn" onclick="guardarTienda('st')">Guardar</button>
-              <button class="btn muted" onclick="exportarTiendaTXT('st')">📄 TXT</button>
-              <button class="btn muted" onclick="enviarTiendaWhatsApp('st')">📲 WhatsApp</button>
+              <button class="btn ghost" data-action="estandarizar" data-code="st">Estandarizar</button>
+              <button class="btn" data-action="guardarTienda" data-code="st">Guardar</button>
+              <button class="btn muted" data-action="exportarTiendaTXT" data-code="st">📄 TXT</button>
+              <button class="btn muted" data-action="enviarTiendaWhatsApp" data-code="st">📲 WhatsApp</button>
             </div>
           </div>
           <div class="bd">
             <textarea id="in_st" placeholder="Pega lista Santiago..."></textarea>
-            <div class="hint">Edita en la tabla: OK = verde, Revisar = rojo. Sugerencias al escribir. Cantidades con teclado (+/-/↑/↓).</div>
+            <div class="hint">Edita en tabla: OK = verde, Revisar = rojo. Sugerencias al escribir. Cantidades con teclado (+/-/↑/↓).</div>
             <div id="tbl_st_wrap" class="scroll-x" style="margin-top:8px"></div>
           </div>
         </div>
@@ -125,8 +141,8 @@
         <div class="hd">
           <strong>🏨 Clientes / Hoteles (con TAG)</strong>
           <div class="toolbar">
-            <button class="btn ghost" onclick="addClient()">+ Nuevo cliente</button>
-            <button class="btn muted" onclick="saveClients()">Guardar clientes</button>
+            <button class="btn ghost" id="btnAddClient">+ Nuevo cliente</button>
+            <button class="btn muted" id="btnSaveClients">Guardar clientes</button>
           </div>
         </div>
         <div class="bd">
@@ -145,16 +161,16 @@
         <div class="hd">
           <strong>🧮 Unificación global</strong>
           <div class="toolbar">
-            <button class="btn ghost" onclick="unificarGlobal()">Unificar todo</button>
-            <button class="btn muted" onclick="exportarGlobalTXT()">TXT visible</button>
-            <button class="btn muted" onclick="exportarGlobalXLSX()">Excel</button>
-            <button class="btn" onclick="exportResumenGlobalTXT()">📄 TXT Global</button>
-            <button class="btn muted" onclick="copiarGlobal()">Copiar</button>
+            <button class="btn ghost" id="btnUnificar">Unificar todo</button>
+            <button class="btn muted" id="btnExportGlobalTXT">TXT visible</button>
+            <button class="btn muted" id="btnExportGlobalXLSX">Excel</button>
+            <button class="btn" id="btnResumenGlobalTXT">📄 TXT Global</button>
+            <button class="btn muted" id="btnCopiarGlobal">Copiar</button>
           </div>
         </div>
         <div class="bd">
           <div class="hint">
-            ✅ a la izquierda asigna al proveedor activo. Duplicados probables se <span class="red">marcan en rojo</span> y fila rosada (<b>⚠️</b>).
+            ✅ a la izquierda asigna al proveedor activo. Duplicados probables se marcan en rojo (<b>⚠️</b>).
             Cantidades con teclado (+/-/↑/↓). Enter baja a la siguiente celda.
           </div>
 
@@ -168,7 +184,7 @@
           </div>
 
           <div class="toolbar" style="margin-top:8px">
-            <button class="btn ghost small" onclick="undoLast()">↩️ Deshacer</button>
+            <button class="btn ghost small" id="btnUndo">↩️ Deshacer</button>
             <span class="pill" id="undoPill">Undo: 0</span>
           </div>
 
@@ -186,20 +202,22 @@
         </div>
       </div>
 
-      <!-- ✅ PRECIOS (SOLO COMPRADO/ASIGNADO) -->
+      <!-- ✅ PRECIOS (solo comprado/actualizado desde proveedores) -->
       <div class="card" style="margin-top:12px">
         <div class="hd">
-          <strong>💶 Precios (solo productos comprados/asignados hoy)</strong>
+          <strong>💶 Lista de precios (solo productos con precio)</strong>
           <div class="toolbar">
-            <button class="btn small muted" onclick="rebuildPricesToday()">🔄 Refrescar</button>
-            <button class="btn small muted" onclick="exportPricesTXT()">📄 Export precios TXT</button>
-            <button class="btn small muted" onclick="resetPricesConfirm()">🧽 Reset precios</button>
+            <button class="btn small muted" id="btnRefreshPrices">🔄 Refrescar</button>
+            <button class="btn small" id="btnPricesWA">📲 WhatsApp</button>
+            <button class="btn small muted" id="btnPricesTXT">📄 TXT</button>
+            <button class="btn small muted" id="btnPricesPDF">🧾 PDF (cuadrícula)</button>
+            <button class="btn small muted" id="btnResetPrices">🧽 Reset precios</button>
           </div>
         </div>
         <div class="bd">
           <div class="hint" style="margin-bottom:8px">
-            ✅ Solo aparecen productos de pedidos por proveedor (lo “comprado”).  
-            Si NO cambias un precio, NO se toca. Si está vacío, se ignora.
+            ✅ Los precios se meten en Proveedores (por línea) y se guardan aquí.  
+            Aquí solo se muestran productos que tienen precio. Exporta WhatsApp/TXT/PDF desde aquí.
           </div>
           <div id="prices_wrap" class="scroll-x"></div>
         </div>
@@ -210,18 +228,19 @@
         <div class="hd">
           <strong>🚚 Reparto (tiendas + clientes)</strong>
           <div class="toolbar">
-            <button class="btn small" onclick="enviarRepartoWhatsApp()">📲 WhatsApp</button>
-            <button class="btn small muted" onclick="exportarRepartoTXT()">📄 TXT</button>
-            <button class="btn small muted" onclick="exportarRepartoPDF()">🧾 PDF (cuadrícula)</button>
+            <button class="btn small" id="btnRepartoWA">📲 WhatsApp</button>
+            <button class="btn small muted" id="btnRepartoTXT">📄 TXT</button>
+            <button class="btn small muted" id="btnRepartoPDF">🧾 PDF (cuadrícula)</button>
           </div>
         </div>
         <div class="bd">
           <div class="hint" style="margin-bottom:8px">
-            Selecciona destino (tienda o cliente con pedido). Marca lo repartido y exporta.  
-            Los precios se autocompletan si existen en “Precios”.
+            Selecciona destino. Marca lo repartido y exporta.  
+            Si el producto tiene precio en “Lista de precios”, se autocompleta.
           </div>
+
           <div style="margin-bottom:8px;">
-            <select id="selRepartoTienda" onchange="renderRepartoTienda()"></select>
+            <select id="selRepartoTienda"></select>
           </div>
           <div id="reparto_wrap" class="scroll-x"></div>
         </div>
@@ -230,24 +249,23 @@
   </div>
 
   <!-- FAB Global -->
-  <button class="fab" id="fab" title="Acciones rápidas" style="display:none" onclick="toggleFabMenu()">⚙️</button>
+  <button class="fab" id="fab" title="Acciones rápidas" style="display:none">⚙️</button>
   <div class="fab-menu" id="fabMenu">
-    <button class="fab-item" onclick="unificarGlobal(); toggleFabMenu(true)">🔄 Unificar</button>
-    <button class="fab-item" onclick="exportarGlobalTXT(); toggleFabMenu(true)">📄 TXT visible</button>
-    <button class="fab-item" onclick="exportarGlobalXLSX(); toggleFabMenu(true)">📊 Excel</button>
-    <button class="fab-item" onclick="copiarGlobal(); toggleFabMenu(true)">📋 Copiar</button>
-    <button class="fab-item" onclick="exportResumenGlobalTXT(); toggleFabMenu(true)">🧾 TXT Global</button>
+    <button class="fab-item" id="fabUnificar">🔄 Unificar</button>
+    <button class="fab-item" id="fabTxt">📄 TXT visible</button>
+    <button class="fab-item" id="fabXlsx">📊 Excel</button>
+    <button class="fab-item" id="fabCopiar">📋 Copiar</button>
+    <button class="fab-item" id="fabResumen">🧾 TXT Global</button>
   </div>
 
   <!-- Tabbar -->
   <nav class="tabbar">
-    <button id="btn-dic" class="active" onclick="showTab('dic')">📚<span>Diccionario</span></button>
-    <button id="btn-tiendas" onclick="showTab('tiendas')">🏪<span>Tiendas</span></button>
-    <button id="btn-global" onclick="showTab('global')">🧮<span>Global</span></button>
-    <button id="btn-proveedores" onclick="showTab('proveedores')">📦<span>Proveedores</span></button>
+    <button id="btn-dic" class="active" data-tab="dic">📚<span>Diccionario</span></button>
+    <button id="btn-tiendas" data-tab="tiendas">🏪<span>Tiendas</span></button>
+    <button id="btn-global" data-tab="global">🧮<span>Global</span></button>
+    <button id="btn-proveedores" data-tab="proveedores">📦<span>Proveedores</span></button>
   </nav>
 
-  <!-- JS separado -->
   <script src="app.js"></script>
 </body>
 </html>
