@@ -43,18 +43,22 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
 [data-theme="dark"] .pill.warn{border-color:#7f1d1d;background:#2b0d0d;color:#fecaca}
 .red{color:var(--bad);font-weight:700}
 .green{color:var(--ok);font-weight:700}
+
 .ac-box{position:absolute;background:var(--bg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);z-index:9999;overflow:hidden;max-height:220px;overflow-y:auto}
 .ac-item{padding:8px 10px;cursor:pointer;font-size:14px}
 .ac-item:hover{background:#f3f4f6}
 [data-theme="dark"] .ac-item:hover{background:#111827}
+
 .prov-bar{display:flex;gap:8px;flex-wrap:wrap}
 .prov-btn{padding:8px 12px;border-radius:999px;border:1px solid var(--kiwi);background:var(--bg);color:var(--kiwi);cursor:pointer;font-size:13px}
 .prov-btn.active{background:var(--kiwi);color:#fff}
 .ok-assign{border:1px solid var(--kiwi);background:#ecfdf5;color:#166534;border-radius:10px;padding:6px 10px;cursor:pointer}
 [data-theme="dark"] .ok-assign{background:#052e1a;color:#86efac}
+
 .dup{background:#fff5f5}
 [data-theme="dark"] .dup{background:#2b0d0d}
 .dup .flag{color:#b91c1c;font-weight:700;margin-left:6px}
+
 .tabbar{
   position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);
   display:flex;justify-content:space-around;align-items:center;height:56px;z-index:999;
@@ -64,6 +68,7 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
   padding:6px 8px; border-radius:10px; transition: background .15s ease, color .15s ease
 }
 .tabbar button.active{color:var(--kiwi); background:rgba(22,163,74,.08)}
+
 .grid-3{display:grid;grid-template-columns:1fr;gap:12px}
 @media(min-width:980px){.grid-3{grid-template-columns:repeat(3,1fr)}}
 
@@ -92,7 +97,6 @@ select{
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .row > *{flex:1}
 
-/* ✅ NUEVO: ayudas de teclado + precios + pdf grid */
 .price-chip{
   display:inline-flex;align-items:center;gap:6px;
   padding:2px 8px;border-radius:999px;border:1px solid var(--border);
@@ -109,11 +113,3 @@ select{
   background:var(--bg);color:var(--ink);cursor:pointer;font-weight:700
 }
 .qty-btn:active{transform:translateY(1px)}
-.pdf-grid{
-  width:100%; border-collapse:collapse;
-  font-family:'Poppins',sans-serif; font-size:12px;
-}
-.pdf-grid th,.pdf-grid td{
-  border:1px solid #11182722; padding:6px; vertical-align:top;
-}
-.pdf-grid th{background:#11182710; text-transform:uppercase; letter-spacing:.04em}
