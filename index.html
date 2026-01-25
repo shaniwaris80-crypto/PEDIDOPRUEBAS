@@ -1,6 +1,3 @@
-<!-- ===========================
-PARTE 1/3 — ARSLAN LISTAS v3.4 (INDEX COMPLETO)
-=========================== -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,7 +7,7 @@ PARTE 1/3 — ARSLAN LISTAS v3.4 (INDEX COMPLETO)
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-<!-- ✅ Para generar LINK Repartidor / Precios comprimidos -->
+<!-- ✅ Para generar LINK Repartidor comprimido -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
 
 <style>
@@ -123,7 +120,7 @@ PARTE 1/3 — ARSLAN LISTAS v3.4 (INDEX COMPLETO)
   .qty-tools{display:flex;gap:6px;align-items:center;justify-content:flex-end}
   .qty-btn{
     width:28px;height:28px;border-radius:10px;border:1px solid var(--border);
-    background:var(--bg);color:var(--ink);cursor:pointer;font-weight:700;font-size:12px;
+    background:var(--bg);color:var(--ink);cursor:pointer;font-weight:700
   }
   .qty-btn:active{transform:translateY(1px)}
   .pdf-grid{
@@ -142,7 +139,6 @@ PARTE 1/3 — ARSLAN LISTAS v3.4 (INDEX COMPLETO)
       <h1>🍈 ARSLAN LISTAS v3.4 — KIWI MOBILE TABS</h1>
       <span class="pill">Modo móvil optimizado</span>
       <span class="pill">🚚 Reparto link: /reparto/</span>
-      <span class="pill">💶 Precios link: /ponerprecios/</span>
       <span class="price-chip" title="Atajos de cantidades">
         <span class="kbd">+</span><span class="kbd">-</span>
         <span class="kbd">↑</span><span class="kbd">↓</span>
@@ -152,7 +148,6 @@ PARTE 1/3 — ARSLAN LISTAS v3.4 (INDEX COMPLETO)
     </div>
     <div class="toolbar">
       <button class="btn ghost small" onclick="generarLinkRepartidor()">🚚 Link Repartidor</button>
-      <button class="btn ghost small" onclick="generarLinkPrecios()">💶 Link Precios</button>
       <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">🌗 Tema</button>
     </div>
   </div>
@@ -271,8 +266,8 @@ PARTE 1/3 — ARSLAN LISTAS v3.4 (INDEX COMPLETO)
         </div>
         <div class="bd">
           <div class="hint">
-            ✅ a la izquierda asigna al proveedor activo. Duplicados probables se <span class="red">marcan en rojo</span> y fila rosada (<b>⚠️</b>).  
-            Cantidades con teclado (+/-/↑/↓). Enter baja a la siguiente fila. Botones x2 y ½ para ajustar rápido.
+            ✅ a la izquierda asigna al proveedor activo. Duplicados probables se <span class="red">marcan en rojo</span> y fila rosada (<b>⚠️</b>).
+            Cantidades con teclado (+/-/↑/↓). Enter baja a la siguiente fila.
           </div>
 
           <div class="card" style="margin-top:8px">
@@ -331,14 +326,12 @@ PARTE 1/3 — ARSLAN LISTAS v3.4 (INDEX COMPLETO)
             <button class="btn small" onclick="enviarRepartoWhatsApp()">📲 WhatsApp</button>
             <button class="btn small muted" onclick="exportarRepartoTXT()">📄 TXT</button>
             <button class="btn small muted" onclick="exportarRepartoPDF()">🧾 PDF (cuadrícula)</button>
-            <button class="btn small muted" id="btnRepartoLock" onclick="toggleRepartoReadOnly()">🔓 Editar</button>
           </div>
         </div>
         <div class="bd">
           <div class="hint" style="margin-bottom:8px">
             Selecciona destino (tienda o cliente con pedido). Marca lo repartido y exporta.  
-            Los precios se autocompletan si existen en “Precios”.  
-            🔒 Modo solo lectura protege las cantidades y precios (ideal para el repartidor).
+            Los precios se autocompletan si existen en “Precios”.
           </div>
           <div style="margin-bottom:8px;">
             <select id="selRepartoTienda" onchange="renderRepartoTienda()"></select>
@@ -689,10 +682,7 @@ HINOJOS
 MANDARINA DE HOJA
 UVA ROJA PRIMERA
 UVA BLANCA PRIMERA`;
-<!-- ===========================
-PARTE 2/3 — CONTINÚA SCRIPT (PEGA JUSTO DESPUÉS DEL BLOQUE DE PARTE 1)
-=========================== -->
-<script>
+
 function uniqueVocab(lines){
   const seen = new Set(); const out=[];
   for(const l of lines){
@@ -827,7 +817,7 @@ function addNewWord(){
 }
 
 /* ==========================
-   Coincidencia aproximada
+   Coincidencia aproximada (Dice + TokenSet)
 ========================== */
 function bigrams(str){
   const s = stripGenericWords(str);
@@ -860,7 +850,7 @@ function bestMatch(query, vocabArr){
 }
 
 /* ==========================
-   Parser líneas (cantidad + nombre)
+   Parser líneas (cantidad + nombre) — mejorado
 ========================== */
 function parseMaybeFraction(s){
   const m = String(s||'').match(/^\s*(\d+)\s*\/\s*(\d+)\s*$/);
@@ -904,7 +894,7 @@ function parseLine(raw){
 }
 
 /* ==========================
-   Autocomplete
+   Autocomplete (mejorado + rápido con CACHE)
 ========================== */
 let AC_ACTIVE = null;
 let AC_OWNER = null;
@@ -960,7 +950,7 @@ function attachAutocomplete(cell, onPick){
 }
 
 /* ==========================
-   Atajos cantidades
+   ✅ Atajos cantidades (delegación)
 ========================== */
 function bindQtyShortcuts(rootEl, getCellValue, setCellValue, onChanged){
   if(!rootEl) return;
@@ -1024,7 +1014,8 @@ function focusNextEditableCell(cur){
     }
   }catch{}
 }
-
+</script>
+<script>
 /* ==========================
    Render tabla tienda
 ========================== */
@@ -1385,9 +1376,10 @@ function enviarClienteWhatsApp(id){
   const msg = encodeURIComponent(`🏨 *Pedido ${label}*\n\n${txt}`);
   window.open(`https://wa.me/?text=${msg}`, '_blank');
 }
-
+</script>
+<script>
 /* ==========================
-   UNDO simple
+   UNDO simple (últimas acciones)
 ========================== */
 let undoStack = [];
 function loadUndo(){
@@ -1436,7 +1428,7 @@ function undoLast(){
 }
 
 /* ==========================
-   Unificar global
+   Unificar global (tiendas + clientes)
 ========================== */
 function getAllRowsUnified(){
   const all = [].concat(tiendaState.sp||[], tiendaState.sl||[], tiendaState.st||[]);
@@ -1452,7 +1444,6 @@ function unificarGlobal(){
   const map = new Map();
   all.forEach(r=>{
     const key = normKey(r.e);
-    if(!key) return;
     if(!map.has(key)) map.set(key,{name:r.e,total:0});
     map.get(key).total += (Number(r.q)||0);
   });
@@ -1460,6 +1451,7 @@ function unificarGlobal(){
 
   const names = arr.map(x=>x.name);
   const similarSet = new Set();
+
   for(let i=0;i<names.length;i++){
     for(let j=i+1;j<Math.min(i+15, names.length);j++){
       const s1 = names[i], s2 = names[j];
@@ -1484,7 +1476,7 @@ function renderGlobalTable(rows, similarSet){
 
   let html = `
     <div class="hint" style="margin-bottom:6px">
-      Proveedor activo: <b>${ACTIVE_PROV}</b>. Usa ✅ para asignar rápidamente. Botones x2 y ½ para ajustar cantidades.
+      Proveedor activo: <b>${ACTIVE_PROV}</b>. Usa ✅ para asignar rápidamente.
     </div>
     <div class="scroll-x"><table>
       <thead><tr><th></th><th>Producto</th><th>Total</th><th>Tools</th><th>Estado</th></tr></thead>
@@ -1499,8 +1491,6 @@ function renderGlobalTable(rows, similarSet){
         <div class="qty-tools">
           <button class="qty-btn" onclick="bumpGlobalQty(${i},-1)">-</button>
           <button class="qty-btn" onclick="bumpGlobalQty(${i},+1)">+</button>
-          <button class="qty-btn" onclick="scaleGlobalQty(${i},2)">x2</button>
-          <button class="qty-btn" onclick="scaleGlobalQty(${i},0.5)">½</button>
         </div>
       </td>
       <td>${isSimilar? '<span class="pill warn">Posible duplicado</span>':'<span class="pill ok">OK</span>'}</td>
@@ -1574,14 +1564,6 @@ function bumpGlobalQty(idx, delta){
   unificarGlobal();
 }
 
-function scaleGlobalQty(idx, factor){
-  if(!globalRows[idx]) return;
-  const cur = num(globalRows[idx].total);
-  globalRows[idx].total = clampQty(cur * factor);
-  pushUndo({type:'scale_global_qty', factor});
-  unificarGlobal();
-}
-
 function assignFromGlobal(idx){
   const item = globalRows[idx];
   if(!item) return;
@@ -1604,7 +1586,7 @@ function assignFromGlobal(idx){
 }
 
 /* ==========================
-   Barra proveedores + paneles
+   Barra proveedores + paneles (con “Devolver a Global”)
 ========================== */
 function buildProvBar(){
   const bar = byId('provBar'); bar.innerHTML='';
@@ -1668,8 +1650,6 @@ function renderProvidersPanels(){
             <div class="qty-tools">
               <button class="qty-btn" onclick="bumpProvQty('${p}',${ix},-1)">-</button>
               <button class="qty-btn" onclick="bumpProvQty('${p}',${ix},+1)">+</button>
-              <button class="qty-btn" onclick="scaleProvQty('${p}',${ix},2)">x2</button>
-              <button class="qty-btn" onclick="scaleProvQty('${p}',${ix},0.5)">½</button>
               <button class="qty-btn" title="Devolver a Global" onclick="unassignProviderLine('${p}',${ix})">↩️</button>
             </div>
           </td>
@@ -1728,15 +1708,6 @@ function bumpProvQty(prov, idx, delta){
   orders[prov][idx].qty = clampQty(num(orders[prov][idx].qty) + delta);
   persistState();
   pushUndo({type:'bump_provider_qty', prov});
-  renderProvidersPanels();
-  rebuildPricesToday();
-}
-
-function scaleProvQty(prov, idx, factor){
-  if(!orders[prov] || !orders[prov][idx]) return;
-  orders[prov][idx].qty = clampQty(num(orders[prov][idx].qty) * factor);
-  persistState();
-  pushUndo({type:'scale_provider_qty', prov, factor});
   renderProvidersPanels();
   rebuildPricesToday();
 }
@@ -1802,7 +1773,6 @@ function exportResumenGlobalTXT(){
   const totalMap = {};
   all.forEach(r=>{
     const k = normKey(r.e);
-    if(!k) return;
     if(!totalMap[k]) totalMap[k] = {name:r.e, total:0};
     totalMap[k].total += (Number(r.q)||0);
   });
@@ -1964,16 +1934,11 @@ function resetPricesConfirm(){
   rebuildPricesToday();
   alert('Precios reseteados.');
 }
-<!-- ===========================
-PARTE 3/3 — RESTO DEL SCRIPT + INIT + CIERRE FINAL
-=========================== -->
-<script>
+
 /* ==========================
    🚚 REPARTO (tiendas + clientes)
 ========================== */
 const repartoState = {};
-let REPARTO_READONLY = false;
-
 function keyLine(name){ return normKey(name); }
 
 function getRepartoDestinations(){
@@ -2003,7 +1968,6 @@ function buildRepartoSelector(){
 }
 
 function marcarTodoReparto(checked){
-  if(REPARTO_READONLY){ alert('Modo solo lectura activo. Desbloquea para editar.'); return; }
   const sel = byId('selRepartoTienda');
   const code = sel ? sel.value : '';
   if(!code){ alert('Selecciona un destino primero.'); return; }
@@ -2014,32 +1978,6 @@ function marcarTodoReparto(checked){
     repartoState[code][k].checked = !!checked;
   });
   renderRepartoTienda();
-}
-
-function toggleRepartoReadOnly(){
-  REPARTO_READONLY = !REPARTO_READONLY;
-  const btn = byId('btnRepartoLock');
-  if(btn){
-    btn.textContent = REPARTO_READONLY ? '🔒 Solo lectura' : '🔓 Editar';
-  }
-  renderRepartoTienda();
-}
-
-function renderRepartoRowHTML(code, r, rowKey){
-  const toolsHTML = REPARTO_READONLY ? '' :
-    `<div class="qty-tools">
-      <button class="qty-btn" onclick="bumpRepartoQty('${code}','${rowKey}',-1)">-</button>
-      <button class="qty-btn" onclick="bumpRepartoQty('${code}','${rowKey}',+1)">+</button>
-    </div>`;
-  const priceEditableAttr = REPARTO_READONLY ? '' : 'contenteditable="true"';
-  const disabledCheckbox = REPARTO_READONLY ? 'disabled' : '';
-  return `<tr>
-    <td><input type="checkbox" ${r.checked?'checked':''} ${disabledCheckbox} onchange="toggleRepartoItem('${code}', '${rowKey}', this.checked)"></td>
-    <td>${r.name}</td>
-    <td class="green">${r.qty}</td>
-    <td>${toolsHTML}</td>
-    <td ${priceEditableAttr} data-f="price" data-rk="${rowKey}" onblur="updateRepartoPrice('${code}', '${rowKey}', this.innerText)">${r.price||''}</td>
-  </tr>`;
 }
 
 function renderRepartoTienda(){
@@ -2096,33 +2034,40 @@ function renderRepartoTienda(){
   let html = `
     <div class="hint" style="margin-bottom:6px">
       Seleccionados con precio: <b>${totalImporte ? totalImporte.toFixed(2)+'€' : '0.00€'}</b>
-      ${REPARTO_READONLY ? ' · Modo <b>solo lectura</b> (no se guardan cambios).' : ''}
     </div>
     <table>
       <thead><tr><th></th><th>Producto</th><th>Cantidad</th><th>Tools</th><th>Precio (€)</th></tr></thead><tbody>`;
 
-  arr.forEach((r)=>{
+  arr.forEach((r,i)=>{
     const rowKey = keyLine(r.name);
-    html += renderRepartoRowHTML(code, r, rowKey);
+    html += `<tr>
+      <td><input type="checkbox" ${r.checked?'checked':''} onchange="toggleRepartoItem('${code}', '${rowKey}', this.checked)"></td>
+      <td>${r.name}</td>
+      <td class="green">${r.qty}</td>
+      <td>
+        <div class="qty-tools">
+          <button class="qty-btn" onclick="bumpRepartoQty('${code}','${rowKey}',-1)">-</button>
+          <button class="qty-btn" onclick="bumpRepartoQty('${code}','${rowKey}',+1)">+</button>
+        </div>
+      </td>
+      <td contenteditable="true" data-f="price" data-rk="${rowKey}" onblur="updateRepartoPrice('${code}', '${rowKey}', this.innerText)">${r.price||''}</td>
+    </tr>`;
   });
 
   html += '</tbody></table>';
   wrap.innerHTML = html;
 
-  if(!REPARTO_READONLY){
-    wrap.querySelectorAll('td[contenteditable][data-f="price"]').forEach(cell=>{
-      cell.addEventListener('keydown', (e)=>{
-        if(e.key==='Enter'){
-          e.preventDefault();
-          focusNextEditableCell(cell);
-        }
-      });
+  wrap.querySelectorAll('td[contenteditable][data-f="price"]').forEach(cell=>{
+    cell.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter'){
+        e.preventDefault();
+        focusNextEditableCell(cell);
+      }
     });
-  }
+  });
 }
 
 function toggleRepartoItem(code, rowKey, checked){
-  if(REPARTO_READONLY) return;
   if(!repartoState[code]) return;
   if(!repartoState[code][rowKey]) return;
   repartoState[code][rowKey].checked = checked;
@@ -2130,7 +2075,6 @@ function toggleRepartoItem(code, rowKey, checked){
 }
 
 function updateRepartoPrice(code, rowKey, val){
-  if(REPARTO_READONLY){ renderRepartoTienda(); return; }
   if(!repartoState[code]) return;
   if(!repartoState[code][rowKey]) return;
 
@@ -2167,7 +2111,6 @@ function updateRepartoPrice(code, rowKey, val){
 }
 
 function bumpRepartoQty(code, rowKey, delta){
-  if(REPARTO_READONLY) return;
   if(!repartoState[code] || !repartoState[code][rowKey]) return;
   const name = repartoState[code][rowKey].name;
   const nk = normKey(name);
@@ -2245,7 +2188,7 @@ function enviarRepartoWhatsApp(){
 }
 
 /* ==========================
-   🧾 PDF Reparto con cuadrícula
+   🧾 PDF Reparto con cuadrícula (sin librerías)
 ========================== */
 function exportarRepartoPDF(){
   const code = byId('selRepartoTienda').value;
@@ -2357,7 +2300,7 @@ document.addEventListener('click', (e)=>{
 }, {capture:true});
 
 /* ==========================
-   ✅ GENERAR LINK REPARTIDOR
+   ✅ GENERAR LINK REPARTIDOR (tu URL fija)
 ========================== */
 function buildRepartoPayloadForLink(){
   const dateISO = new Date().toISOString().split('T')[0];
@@ -2408,63 +2351,6 @@ function generarLinkRepartidor(){
 }
 
 /* ==========================
-   ✅ GENERAR LINK PRECIOS (para /ponerprecios/)
-========================== */
-function buildPreciosPayloadForLink(){
-  const all = getAllRowsUnified();
-  if(!all.length) return null;
-
-  const prodMap = new Map();
-  all.forEach(r=>{
-    const k = normKey(r.e);
-    if(!k) return;
-    if(!prodMap.has(k)) prodMap.set(k,{ name:r.e, providers:new Set() });
-  });
-
-  PROVEEDORES.forEach(p=>{
-    (orders[p]||[]).forEach(it=>{
-      const k = normKey(it.name);
-      if(!k) return;
-      if(!prodMap.has(k)) prodMap.set(k,{ name:it.name, providers:new Set() });
-      prodMap.get(k).providers.add(p);
-    });
-  });
-
-  const items = [];
-  prodMap.forEach((val,k)=>{
-    const provs = Array.from(val.providers);
-    if(!provs.length) provs.push('SIN PROV');
-    const rec = pricesDB[k];
-    items.push({
-      key: k,
-      name: val.name,
-      providers: provs,
-      currentPrice: rec && rec.price ? rec.price : ''
-    });
-  });
-
-  return {
-    dateISO: new Date().toISOString().split('T')[0],
-    items
-  };
-}
-
-function generarLinkPrecios(){
-  const payload = buildPreciosPayloadForLink();
-  if(!payload || !payload.items.length){
-    alert('No hay productos estandarizados para poner precios.');
-    return;
-  }
-  const json = JSON.stringify(payload);
-  const packed = LZString.compressToEncodedURIComponent(json);
-  const baseURL = "https://shaniwaris80-crypto.github.io/ponerprecios/";
-  const url = `${baseURL}?data=${packed}`;
-  navigator.clipboard?.writeText(url);
-  window.open(url,'_blank');
-  alert('Link Precios generado y copiado. Pégalo en WhatsApp o abre en otro dispositivo.');
-}
-
-/* ==========================
    INIT
 ========================== */
 (function init(){
@@ -2477,11 +2363,6 @@ function generarLinkPrecios(){
 
   showTab('dic');
   idle(()=>{ buildProvBar(); unificarGlobal(); renderProvidersPanels(); renderClientsUI(); buildRepartoSelector(); rebuildPricesToday(); });
-
-  const btnLock = byId('btnRepartoLock');
-  if(btnLock){
-    btnLock.textContent = '🔓 Editar';
-  }
 })();
 </script>
 </body>
