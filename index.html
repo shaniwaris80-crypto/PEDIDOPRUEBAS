@@ -1766,34 +1766,55 @@ function exportResumenGlobalTXT(){
   const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`resumen_pedidos_${today}.txt`; a.click();
 }
 
+<script>
 /* ==========================
-   PRECIOS (solo comprado)
+   💶 PRECIOS (asignados + sin asignar de hoy)
 ========================== */
+
+/**
+ * Ahora devuelve TODOS los productos que existen hoy:
+ * - Los que están en pedidos por proveedor (orders[PROV])
+ * - Los que aparecen en tiendas + clientes (aunque no estén asignados todavía)
+ */
 function getBoughtTodaySet(){
-  const set = new Map();
+  const map = new Map();
+
+  // 1) Productos de pedidos por proveedor (asignados)
   PROVEEDORES.forEach(p=>{
     (orders[p]||[]).forEach(it=>{
       const k = normKey(it.name);
       if(!k) return;
-      if(!set.has(k)) set.set(k, it.name);
+      if(!map.has(k)) map.set(k, it.name);
     });
   });
-  return set;
+
+  // 2) Productos presentes en tiendas + clientes (aunque no estén asignados)
+  const all = getAllRowsUnified(); // usa tiendas + clientes
+  all.forEach(r=>{
+    const k = normKey(r.e);
+    if(!k) return;
+    if(!map.has(k)) map.set(k, r.e);
+  });
+
+  return map;
 }
+
 function rebuildPricesToday(){
   const wrap = byId('prices_wrap');
   if(!wrap) return;
 
   const bought = getBoughtTodaySet();
   if(!bought.size){
-    wrap.innerHTML = `<div class="hint">No hay productos comprados/asignados todavía (asigna desde Global o añade a pedidos).</div>`;
+    wrap.innerHTML = `<div class="hint">No hay productos hoy en tiendas/clientes ni en pedidos por proveedor.</div>`;
     return;
   }
 
+  // Aseguramos que todos los productos hoy tengan entrada en pricesDB
   bought.forEach((name,k)=>{
     if(!pricesDB[k]){
       pricesDB[k] = { name:name, price:'', updatedAt:0 };
     }else{
+      // mantenemos nombre anterior si existe, pero si está vacío lo rellenamos
       pricesDB[k].name = pricesDB[k].name || name;
     }
   });
@@ -1817,11 +1838,12 @@ function rebuildPricesToday(){
   html += `</tbody></table></div>`;
   wrap.innerHTML = html;
 
+  // ✅ Atajos: Enter pasa al siguiente precio, acepta decimales con , o .
   wrap.querySelectorAll('td[contenteditable][data-f="price"]').forEach(cell=>{
     cell.addEventListener('keydown', (e)=>{
       if(e.key==='Enter'){
         e.preventDefault();
-        focusNextEditableCell(cell);
+        focusNextEditableCell(cell); // ya definida arriba en tu código
       }
     });
     cell.addEventListener('blur', ()=>{
@@ -1829,38 +1851,49 @@ function rebuildPricesToday(){
       const raw = (cell.innerText||'').trim();
       if(!k) return;
 
+      // Si se borra el contenido, restauramos el valor ya guardado
       if(raw===''){
         cell.innerText = (pricesDB[k] && pricesDB[k].price) ? pricesDB[k].price : '';
         return;
       }
 
+      // Aceptar decimales con coma o punto
       const n = parseFloat(String(raw).replace(',','.'));
       if(isNaN(n)){
+        // Valor inválido → volvemos al anterior
         cell.innerText = (pricesDB[k] && pricesDB[k].price) ? pricesDB[k].price : '';
         return;
       }
 
       const val = n.toFixed(2);
 
+      // Si no ha cambiado, no tocamos timestamps
       if(pricesDB[k] && String(pricesDB[k].price||'') === val){
         cell.innerText = val;
         return;
       }
 
+      // Guardar en base de datos local
       pricesDB[k] = pricesDB[k] || { name:'', price:'', updatedAt:0 };
       pricesDB[k].price = val;
       pricesDB[k].updatedAt = Date.now();
       persistState();
 
+      // Refrescar reparto (para que autocomplete precios)
       idle(()=>renderRepartoTienda());
     }, {passive:true});
   });
 
   persistState();
 }
+
 function exportPricesTXT(){
   const bought = getBoughtTodaySet();
-  if(!bought.size){ alert('No hay productos comprados/asignados hoy.'); return; }
+  if(!bought.size){
+    alert('No hay productos hoy (ni en pedidos ni en tiendas/clientes).');
+    return;
+  }
+
   const rows = [];
   bought.forEach((name,k)=>{
     const rec = pricesDB[k];
@@ -1868,11 +1901,20 @@ function exportPricesTXT(){
       rows.push(`${rec.name || name}\t${rec.price}€`);
     }
   });
-  if(!rows.length){ alert('No hay precios guardados para los productos de hoy.'); return; }
+
+  if(!rows.length){
+    alert('No hay precios guardados para los productos de hoy.');
+    return;
+  }
+
   const today = new Date().toISOString().split('T')[0];
   const blob = new Blob([rows.join('\n')],{type:'text/plain'});
-  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`precios_${today}.txt`; a.click();
+  const a = document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`precios_${today}.txt`;
+  a.click();
 }
+
 function resetPricesConfirm(){
   if(!confirm('¿Resetear TODOS los precios guardados? (No afecta pedidos ni vocabulario)')) return;
   pricesDB = {};
@@ -1880,6 +1922,7 @@ function resetPricesConfirm(){
   rebuildPricesToday();
   alert('Precios reseteados.');
 }
+</script>
 
 /* ==========================
    REPARTO
